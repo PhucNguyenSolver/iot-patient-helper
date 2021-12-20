@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">THPT-THD</string>
+    <string name="channel_name">channel 1</string>
+    <string name="channel_description">This is channel 1</string>
+    <string name="accept">Chấp nhận</string>
+    <string name="emit">Emit</string>
+    <string name="textHolder">Phòng trực:</string>
+</resources>

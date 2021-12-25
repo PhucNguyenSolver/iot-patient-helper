@@ -28,7 +28,8 @@
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/textHolder" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -165,7 +166,16 @@
 
     </LinearLayout>
 
-<!--    <Button-->
+    <Button
+        android:id="@+id/button_emit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/emit"
+        app:layout_constraintEnd_toStartOf="@+id/button_accept"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="616dp" />
+
+    <!--    <Button-->
 <!--        android:id="@+id/button_emit"-->
 <!--        android:layout_width="wrap_content"-->
 <!--        android:layout_height="wrap_content"-->

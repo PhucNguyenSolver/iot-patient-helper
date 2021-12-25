@@ -14,6 +14,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -29,102 +30,41 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     MqttAndroidClient client;
-    String dem;
-    private Button button;
+    RequestQueue requestQueue;
+    private Button resolveButton;
+    private Button emitButton;
     private TextView text;
-    private CheckBox g1, g2, g3, g4, g5, g6, g7, g8, g9, g10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        this.requestQueue = new RequestQueue();
         this.text = (TextView) this.findViewById(R.id.text);
+        this.resolveButton = (Button) this.findViewById(R.id.button_accept);
+        this.emitButton = (Button) this.findViewById(R.id.button_emit);
 
-        this.button = (Button) this.findViewById(R.id.button_accept);
+        CheckBox g1 = (CheckBox) this.findViewById(R.id.checkBox1);
+        CheckBox g2 = (CheckBox) this.findViewById(R.id.checkBox2);
+        CheckBox g3 = (CheckBox) this.findViewById(R.id.checkBox3);
+        CheckBox g4 = (CheckBox) this.findViewById(R.id.checkBox4);
+        CheckBox g5 = (CheckBox) this.findViewById(R.id.checkBox5);
+        CheckBox g6 = (CheckBox) this.findViewById(R.id.checkBox6);
+        CheckBox g7 = (CheckBox) this.findViewById(R.id.checkBox7);
+        CheckBox g8 = (CheckBox) this.findViewById(R.id.checkBox8);
+        CheckBox g9 = (CheckBox) this.findViewById(R.id.checkBox9);
+        CheckBox g10 = (CheckBox) this.findViewById(R.id.checkBox10);
 
-        this.g1 = (CheckBox) this.findViewById(R.id.checkBox1);
-        this.g2 = (CheckBox) this.findViewById(R.id.checkBox2);
-        this.g3 = (CheckBox) this.findViewById(R.id.checkBox3);
-        this.g4 = (CheckBox) this.findViewById(R.id.checkBox4);
-        this.g5 = (CheckBox) this.findViewById(R.id.checkBox5);
-        this.g6 = (CheckBox) this.findViewById(R.id.checkBox6);
-        this.g7 = (CheckBox) this.findViewById(R.id.checkBox7);
-        this.g8 = (CheckBox) this.findViewById(R.id.checkBox8);
-        this.g9 = (CheckBox) this.findViewById(R.id.checkBox9);
-        this.g10 = (CheckBox) this.findViewById(R.id.checkBox10);
+        initMqtt();
+        emitButton.setOnClickListener(this::fakeRequestClick);
 
-        MqttConnectOptions options = new MqttConnectOptions();
-        options.setAutomaticReconnect(true);
-        String clientId = MqttClient.generateClientId();
-        client = new MqttAndroidClient(this.getApplicationContext(), "tcp://192.168.0.100:1883", clientId);
-        client.setCallback(new MqttCallback() {
-            @Override
-            public void connectionLost(Throwable cause) {
-
-            }
-
-            @Override
-            public void messageArrived(String topic, MqttMessage message) throws Exception {
-                Log.d("mqtt", message.toString());
-                dem = topic;
-                text.setText(topic + ": " + message.toString());
-
-                boolean isUrgent = message.toString().equals("Cap cuu") ? true : false;
-                sendNoti(topic, message.toString(), isUrgent);
-            }
-
-            @Override
-            public void deliveryComplete(IMqttDeliveryToken token) {
-
-            }
-        });
-        try {
-            IMqttToken token = client.connect(options);
-            token.setActionCallback(new IMqttActionListener() {
-                @Override
-                public void onSuccess(IMqttToken asyncActionToken) {
-                    // We are connected
-                    Log.d("mqtt", "onSuccess");
-                }
-
-                @Override
-                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    // Something went wrong e.g. connection timeout or firewall problems
-                    Log.d("mqtt", "onFailure");
-
-                }
-            });
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
-
-
-////Test unit
-//        this.findViewById(R.id.button_emit).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                int num = new Random().nextInt(10);
-//                if (num < 4) {
-//                    sendNoti("401", "Cap cuu", true);
-//                } else {
-//                    sendNoti("401", "Ho tro", false);
-//                }
-//            }
-//        });
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                stopSound();
-                pub(dem + "_re", "accept");
-                text.setText(R.string.textHolder);
-            }
-        });
+        resolveButton.setOnClickListener(v -> handleBtnResolveClick());
 
         g1.setOnClickListener(v -> {
             boolean checked = ((CheckBox) v).isChecked();
@@ -228,22 +168,131 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    void pub(String top, String content) {
-        String topic = top;
-        String payload = content;
+    private void initMqtt() {
+        Log.d("Sa mqtt", "MQTT Init");
+        if (1 == 1) return;
+        // TODO: temporary turn of mqtt, delete above
+
+        MqttConnectOptions options = new MqttConnectOptions();
+        options.setAutomaticReconnect(true);
+        String clientId = MqttClient.generateClientId();
+        client = new MqttAndroidClient(this.getApplicationContext(), "tcp://192.168.0.100:1883", clientId);
+        client.setCallback(new MqttCallback() {
+            @Override
+            public void connectionLost(Throwable cause) {
+
+            }
+
+            @Override
+            public void messageArrived(String topic, MqttMessage mqttMessage) {
+                String message = mqttMessage.toString();
+                Log.d("mqtt", message);
+                handleMessageArrived(topic, message);
+            }
+
+            @Override
+            public void deliveryComplete(IMqttDeliveryToken token) {
+
+            }
+        });
+        try {
+            IMqttToken token = client.connect(options);
+            token.setActionCallback(new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    // We are connected
+                    Log.d("mqtt", "onSuccess");
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                    // Something went wrong e.g. connection timeout or firewall problems
+                    Log.d("mqtt", "onFailure");
+
+                }
+            });
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleMessageArrived(String room, String message) {
+//        if (1 == 1) return;
+        // Manage notification
+        switch (message) {
+            case "Cap cuu": {
+                requestQueue.add(room, true);
+                sendNoti(room, message);
+                break;
+            }
+            case "Ho tro": {
+                requestQueue.add(room, false);
+                sendNoti(room, message);
+                break;
+            }
+            case "OK": {
+                requestQueue.remove(room);
+                clearNoti(room);
+                break;
+            }
+            default: {
+                Log.d("Sa warning", "Not implemented request type");
+            }
+        }
+        updateAlarm();
+    }
+
+    private void handleBtnResolveClick() {
+        if (requestQueue.isEmpty()) return;
+
+        Pair<String, Boolean> victim = requestQueue.remove();
+        String room = victim.first;
+        clearNoti(room);
+        pub(room + "_re", "accept");
+        pub(room, "OK");
+        updateAlarm();
+    }
+
+    /***
+     * Manage displayed text and alarm sound
+     */
+    private void updateAlarm() {
+        stopSound();
+        if (requestQueue.isEmpty()) {
+            text.setText(R.string.textHolder);
+            return;
+        }
+        Pair<String, Boolean> req = requestQueue.peek();
+        String room = req.first;
+        Boolean isUrgent = req.second;
+
+        String message = isUrgent ? "Cấp cứu" : "Hỗ trợ";
+        text.setText(room + ": " + message);
+        playSound(isUrgent);
+    }
+
+    void pub(String topic, String content) {
+        Log.d("Sa mqtt", "MQTT Called");
+        if (1 == 1) return;
+        // TODO: temporary turn of pub sub, delete above
+
         byte[] encodedPayload;
         try {
-            encodedPayload = payload.getBytes("UTF-8");
+            encodedPayload = content.getBytes(StandardCharsets.UTF_8);
             MqttMessage message = new MqttMessage(encodedPayload);
             client.publish(topic, message);
-        } catch (UnsupportedEncodingException | MqttException e) {
+        } catch (MqttException e) {
             e.printStackTrace();
         }
         Log.d("mqtt", "pub");
     }
 
-    void sub(String content) {
-        String topic = content;
+    void sub(String topic) {
+        fakeOkMessageSent(topic);
+        Log.d("Sa mqtt", "MQTT Called");
+        if (1 == 1) return;
+        // TODO: temporary turn of pub sub, delete above
+
         int qos = 1;
         try {
             IMqttToken subToken = client.subscribe(topic, qos);
@@ -268,8 +317,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    void unsub(String top) {
-        final String topic = top;
+    void unsub(String topic) {
+        Log.d("Sa mqtt", "MQTT Unsub");
+        if (1 == 1) return;
+        // TODO: temporary turn of pub sub, delete above
+
         try {
             IMqttToken unsubToken = client.unsubscribe(topic);
             unsubToken.setActionCallback(new IMqttActionListener() {
@@ -291,7 +343,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    void sendNoti(@NonNull String topic, @NonNull String msg, boolean isUrgent) {
+    void sendNoti(@NonNull String topic, @NonNull String msg) {
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher_foreground);
         @SuppressLint("WrongConstant") Notification noti = new NotificationCompat.Builder(this, MyApplication.CHANNEL_ID)
             .setContentTitle(topic)
@@ -299,7 +351,7 @@ public class MainActivity extends AppCompatActivity {
             .setSmallIcon(R.drawable.small)
             .setLargeIcon(bitmap)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 })
+            .setAutoCancel(true)
             .setSilent(true)
             .build();
 
@@ -313,10 +365,23 @@ public class MainActivity extends AppCompatActivity {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (notificationManager != null) {
             notificationManager.notify(notificationId, noti);
-            playSound(isUrgent);
         }
     }
 
+    void clearNoti(@NonNull String topic) {
+        int notificationId;
+        try {
+            notificationId = Integer.parseInt(topic);
+        } catch (NumberFormatException e) {
+            notificationId = 1;
+        }
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (notificationManager != null) {
+            notificationManager.cancel(notificationId);
+        }
+    }
+
+    // TODO: UPDATE suitable sound
     void playSound(boolean isUrgent) {
         stopSound();
         Context context = getApplicationContext();
@@ -329,5 +394,18 @@ public class MainActivity extends AppCompatActivity {
         Context context = getApplicationContext();
         Intent stopIntent = new Intent(context, RingtoneService.class);
         context.stopService(stopIntent);
+    }
+
+    //            For testing
+    public void fakeRequestClick(View v)  {
+        int num = new Random().nextInt(10);
+        String topic = String.valueOf(400 + num);
+        String message = (num < 4) ? "Cap cuu" : "Ho tro";
+        Log.d("mqtt", message);
+        handleMessageArrived(topic, message);
+    }
+
+    public void fakeOkMessageSent(String topic) {
+        handleMessageArrived(topic, "OK");
     }
 }

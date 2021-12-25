@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -233,6 +234,7 @@ public class MainActivity extends AppCompatActivity {
             case "OK": {
                 requestQueue.remove(room);
                 clearNoti(room);
+                Toast.makeText(this, room + " đã được tiếp nhận", Toast.LENGTH_LONG).show();
                 break;
             }
             default: {
@@ -251,6 +253,7 @@ public class MainActivity extends AppCompatActivity {
         pub(room + "_re", "accept");
         pub(room, "OK");
         updateAlarm();
+        Toast.makeText(this, "Đã tiếp nhận", Toast.LENGTH_SHORT).show();
     }
 
     /***

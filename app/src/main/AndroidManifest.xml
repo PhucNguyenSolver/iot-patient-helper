@@ -12,6 +12,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
+        android:allowBackup="true"
         android:supportsRtl="true"
         android:theme="@style/Theme.THPTTHD"
         android:fullBackupContent="@xml/backup_descriptor">
@@ -26,7 +27,7 @@
         </activity>
         <service android:name="org.eclipse.paho.android.service.MqttService" >
         </service>
-        <service android:name=".RingtoneService"></service>
+        <service android:name=".RingtoneService"/>
     </application>
 
 </manifest>

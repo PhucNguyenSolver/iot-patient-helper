@@ -445,7 +445,7 @@ public class MainActivity extends AppCompatActivity {
                     missedRequestQueue.add(room);
                     sendNoti(room, "Bệnh nhân cần cấp cứu");
                     mHandler.obtainMessage(1).sendToTarget(); // TODO:
-//                    updateAlarm(missedRequestQueue);
+//                    updateAlarm();
                 }
                 cancel();
             }
@@ -467,13 +467,14 @@ public class MainActivity extends AppCompatActivity {
             }
             case "OK": {
                 currentRequestQueue.remove(room); // TODO: does this even work
-//                missedRequestQueue.remove(room);
+                missedRequestQueue.remove(room);
                 break;
             }
             default: {
                 Log.d("Sa warning", "Not implemented request type");
             }
         }
+        updateAlarm();
     }
 
     private synchronized void handleBtnResolveClick() {
@@ -485,19 +486,19 @@ public class MainActivity extends AppCompatActivity {
         pub(room + "_re", "accept");
         pub(room, "OK");
         Toast.makeText(this, "Đã tiếp nhận", Toast.LENGTH_SHORT).show();
-        updateAlarm(missedRequestQueue);
+        updateAlarm();
     }
 
     /***
      * Manage displayed text and alarm sound
      */
-    private synchronized void updateAlarm(Queue<String> q) {
+    private synchronized void updateAlarm() {
         stopSound();
-        if (q.isEmpty()) {
+        if (missedRequestQueue.isEmpty()) {
             text.setText("CHill");
             return;
         }
-        String room = q.peek();
+        String room = missedRequestQueue.peek();
         Log.d("Sa log", room);
         text.setText(room);
         playSound(true);
@@ -508,7 +509,7 @@ public class MainActivity extends AppCompatActivity {
     private void initHandler() {
         mHandler = new Handler() {
             public void handleMessage(Message msg) {
-                updateAlarm(missedRequestQueue);
+                updateAlarm();
             }
         };
     }

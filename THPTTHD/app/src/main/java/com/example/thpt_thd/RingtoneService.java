@@ -52,7 +52,7 @@ public class RingtoneService extends Service
 
     private Uri getCustomRingtoneUri() {
         Resources resources = getApplicationContext().getResources();
-        int resourceId = R.raw.alarm_german;
+        int resourceId = R.raw.doctor_alarm;
         return new Uri.Builder()
             .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
             .authority(resources.getResourcePackageName(resourceId))

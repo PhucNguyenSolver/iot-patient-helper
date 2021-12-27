@@ -9,7 +9,7 @@
 #define mqtt_server "192.168.0.100" // Thay bằng thông tin của bạn
 const char* mqtt_topic_pub ="y_ta";   //Giữ nguyên nếu bạn tạo topic tên là demo
 const char* mqtt_topic_sub ="y_ta";
-String clientId="benhnhan";
+String clientId="benhnhan1";
 
 const uint16_t mqtt_port = 1883; //Port của CloudMQTT
 WiFiClient espClient;

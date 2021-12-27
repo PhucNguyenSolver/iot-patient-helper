@@ -411,4 +411,15 @@ public class MainActivity extends AppCompatActivity {
     public void fakeOkMessageSent(String topic) {
         handleMessageArrived(topic, "OK");
     }
+
+    // public void spamAccept(String room) {
+    //     for (int i = 0; i < 70; i++) {
+    //         String channel = room + "_re";
+    //         pub(channel, "accept");
+    //         try {
+    //             Thread.sleep(10);
+    //         } catch (Exception e) {
+    //         }
+    //     }
+    // }
 }

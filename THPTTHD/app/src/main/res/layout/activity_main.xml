@@ -166,15 +166,6 @@
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/button_emit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/emit"
-        app:layout_constraintEnd_toStartOf="@+id/button_accept"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="616dp" />
-
     <!--    <Button-->
 <!--        android:id="@+id/button_emit"-->
 <!--        android:layout_width="wrap_content"-->

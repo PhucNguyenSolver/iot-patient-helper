@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     MqttAndroidClient client;
     RequestQueue requestQueue;
     private Button resolveButton;
-    private Button emitButton;
+//    private Button emitButton;
     private TextView text;
 
     @Override
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         this.requestQueue = new RequestQueue();
         this.text = (TextView) this.findViewById(R.id.text);
         this.resolveButton = (Button) this.findViewById(R.id.button_accept);
-        this.emitButton = (Button) this.findViewById(R.id.button_emit);
+//        this.emitButton = (Button) this.findViewById(R.id.button_emit);
 
         CheckBox g1 = (CheckBox) this.findViewById(R.id.checkBox1);
         CheckBox g2 = (CheckBox) this.findViewById(R.id.checkBox2);
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         CheckBox g10 = (CheckBox) this.findViewById(R.id.checkBox10);
 
         initMqtt();
-        emitButton.setOnClickListener(this::fakeRequestClick);
+//        emitButton.setOnClickListener(this::fakeRequestClick);
 
         resolveButton.setOnClickListener(v -> handleBtnResolveClick());
 
@@ -170,9 +170,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initMqtt() {
-        Log.d("Sa mqtt", "MQTT Init");
-        if (1 == 1) return;
-        // TODO: temporary turn of mqtt, delete above
+//        Log.d("Sa mqtt", "MQTT Init");
+//        if (1 == 1) return;
+//        // TODO: temporary turn of mqtt, delete above
 
         MqttConnectOptions options = new MqttConnectOptions();
         options.setAutomaticReconnect(true);
@@ -218,7 +218,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void handleMessageArrived(String room, String message) {
-//        if (1 == 1) return;
         // Manage notification
         switch (message) {
             case "Cap cuu": {
@@ -275,9 +274,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void pub(String topic, String content) {
-        Log.d("Sa mqtt", "MQTT Called");
-        if (1 == 1) return;
-        // TODO: temporary turn of pub sub, delete above
+//        Log.d("Sa mqtt", "MQTT Called");
+//        if (1 == 1) return;
+//        // TODO: temporary turn of pub sub, delete above
 
         byte[] encodedPayload;
         try {
@@ -291,10 +290,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void sub(String topic) {
-        fakeOkMessageSent(topic);
-        Log.d("Sa mqtt", "MQTT Called");
-        if (1 == 1) return;
-        // TODO: temporary turn of pub sub, delete above
+//        fakeOkMessageSent(topic);
+//        Log.d("Sa mqtt", "MQTT Called");
+//        if (1 == 1) return;
+//        // TODO: temporary turn of pub sub, delete above
 
         int qos = 1;
         try {
@@ -321,9 +320,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void unsub(String topic) {
-        Log.d("Sa mqtt", "MQTT Unsub");
-        if (1 == 1) return;
-        // TODO: temporary turn of pub sub, delete above
+//        Log.d("Sa mqtt", "MQTT Unsub");
+//        if (1 == 1) return;
+//        // TODO: temporary turn of pub sub, delete above
 
         try {
             IMqttToken unsubToken = client.unsubscribe(topic);

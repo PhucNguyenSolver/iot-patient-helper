@@ -38,12 +38,14 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
+    boolean TEST_MODE = false;
     MqttAndroidClient client;
     RequestQueue requestQueue;
     private Button resolveButton;
     private Button emitButton;
     private TextView text;
     private Handler mHandler;
+    private CheckBox checkBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,131 +56,22 @@ public class MainActivity extends AppCompatActivity {
         this.text = (TextView) this.findViewById(R.id.text);
         this.resolveButton = (Button) this.findViewById(R.id.button_accept);
         this.emitButton = (Button) this.findViewById(R.id.button_emit);
-
-        CheckBox g1 = (CheckBox) this.findViewById(R.id.checkBox1);
-        CheckBox g2 = (CheckBox) this.findViewById(R.id.checkBox2);
-        CheckBox g3 = (CheckBox) this.findViewById(R.id.checkBox3);
-        CheckBox g4 = (CheckBox) this.findViewById(R.id.checkBox4);
-        CheckBox g5 = (CheckBox) this.findViewById(R.id.checkBox5);
-        CheckBox g6 = (CheckBox) this.findViewById(R.id.checkBox6);
-        CheckBox g7 = (CheckBox) this.findViewById(R.id.checkBox7);
-        CheckBox g8 = (CheckBox) this.findViewById(R.id.checkBox8);
-        CheckBox g9 = (CheckBox) this.findViewById(R.id.checkBox9);
-        CheckBox g10 = (CheckBox) this.findViewById(R.id.checkBox10);
+        this.checkBox = (CheckBox) this.findViewById(R.id.checkBox);
 
         initMqtt();
         initHandler();
-        subscribeAllTopic(401, 410);
-        emitButton.setOnClickListener(this::fakeRequestClick);
-
         resolveButton.setOnClickListener(v -> handleBtnResolveClick());
-
-        g1.setOnClickListener(v -> {
+        emitButton.setOnClickListener(v -> fakeRequestClick(v));
+        checkBox.setOnClickListener(v -> {
             boolean checked = ((CheckBox) v).isChecked();
-            // Check which checkbox was clicked
-            if (checked) {
-                sub("401");
-            } else {
-                unsub("401");
-            }
+        subscribeAllTopic(401, 410);
         });
-
-        g2.setOnClickListener(v -> {
-            boolean checked = ((CheckBox) v).isChecked();
-            // Check which checkbox was clicked
-            if (checked) {
-                sub("402");
-            } else {
-                unsub("402");
-            }
-        });
-
-        g3.setOnClickListener(v -> {
-            boolean checked = ((CheckBox) v).isChecked();
-            // Check which checkbox was clicked
-            if (checked) {
-                sub("403");
-            } else {
-                unsub("403");
-            }
-        });
-
-        g4.setOnClickListener(v -> {
-            boolean checked = ((CheckBox) v).isChecked();
-            // Check which checkbox was clicked
-            if (checked) {
-                sub("404");
-            } else {
-                unsub("404");
-            }
-        });
-
-        g5.setOnClickListener(v -> {
-            boolean checked = ((CheckBox) v).isChecked();
-            // Check which checkbox was clicked
-            if (checked) {
-                sub("405");
-            } else {
-                unsub("405");
-            }
-        });
-
-        g6.setOnClickListener(v -> {
-            boolean checked = ((CheckBox) v).isChecked();
-            // Check which checkbox was clicked
-            if (checked) {
-                sub("406");
-            } else {
-                unsub("406");
-            }
-        });
-
-        g7.setOnClickListener(v -> {
-            boolean checked = ((CheckBox) v).isChecked();
-            // Check which checkbox was clicked
-            if (checked) {
-                sub("407");
-            } else {
-                unsub("407");
-            }
-        });
-
-        g8.setOnClickListener(v -> {
-            boolean checked = ((CheckBox) v).isChecked();
-            // Check which checkbox was clicked
-            if (checked) {
-                sub("408");
-            } else {
-                unsub("408");
-            }
-        });
-
-        g9.setOnClickListener(v -> {
-            boolean checked = ((CheckBox) v).isChecked();
-            // Check which checkbox was clicked
-            if (checked) {
-                sub("409");
-            } else {
-                unsub("409");
-            }
-        });
-
-        g10.setOnClickListener(v -> {
-            boolean checked = ((CheckBox) v).isChecked();
-            // Check which checkbox was clicked
-            if (checked) {
-                sub("410");
-            } else {
-                unsub("410");
-            }
-        });
-
     }
 
     private void initMqtt() {
-        Log.d("Sa mqtt", "MQTT Init");
-        if (1 == 1) return;
-        // TODO: temporary turn of mqtt, delete above
+//        Log.d("Sa mqtt", "MQTT Init");
+//        if (1 == 1) return;
+//        // TODO: temporary turn of mqtt, delete above
 
         MqttConnectOptions options = new MqttConnectOptions();
         options.setAutomaticReconnect(true);
@@ -223,66 +116,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    private void handleMessageArrived(String room, String message) {
-////        if (1 == 1) return;
-//        // Manage notification
-//        switch (message) {
-//            case "Cap cuu": {
-//                requestQueue.add(room, true);
-//                sendNoti(room, message);
-//                break;
-//            }
-//            case "Ho tro": {
-//                requestQueue.add(room, false);
-//                sendNoti(room, message);
-//                break;
-//            }
-//            case "OK": {
-//                requestQueue.remove(room);
-//                clearNoti(room);
-//                Toast.makeText(this, room + " đã được tiếp nhận", Toast.LENGTH_LONG).show();
-//                break;
-//            }
-//            default: {
-//                Log.d("Sa warning", "Not implemented request type");
-//            }
-//        }
-//        updateAlarm();
-//    }
-//
-//    private void handleBtnResolveClick() {
-//        if (requestQueue.isEmpty()) return;
-//
-//        Pair<String, Boolean> victim = requestQueue.remove();
-//        String room = victim.first;
-//        clearNoti(room);
-//        pub(room + "_re", "accept");
-//        pub(room, "OK");
-//        updateAlarm();
-//        Toast.makeText(this, "Đã tiếp nhận", Toast.LENGTH_SHORT).show();
-//    }
-//
-//    /***
-//     * Manage displayed text and alarm sound
-//     */
-//    private void updateAlarm() {
-//        stopSound();
-//        if (requestQueue.isEmpty()) {
-//            text.setText(R.string.textHolder);
-//            return;
-//        }
-//        Pair<String, Boolean> req = requestQueue.peek();
-//        String room = req.first;
-//        Boolean isUrgent = req.second;
-//
-//        String message = isUrgent ? "Cấp cứu" : "Hỗ trợ";
-//        text.setText(room + ": " + message);
-//        playSound(isUrgent);
-//    }
-
     void pub(String topic, String content) {
         Log.d("Sa mqtt", "MQTT Called");
-        if (1 == 1) return;
+        if (TEST_MODE) return;
         // TODO: temporary turn of pub sub, delete above
 
         byte[] encodedPayload;
@@ -297,9 +133,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void sub(String topic) {
-        fakeOkMessageSent(topic);
         Log.d("Sa mqtt", "MQTT Called");
-        if (1 == 1) return;
+        if (TEST_MODE) return;
         // TODO: temporary turn of pub sub, delete above
 
         int qos = 1;
@@ -319,32 +154,6 @@ public class MainActivity extends AppCompatActivity {
                     // The subscription could not be performed, maybe the user was not
                     // authorized to subscribe on the specified topic e.g. using wildcards
 
-                }
-            });
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
-    }
-
-    void unsub(String topic) {
-        Log.d("Sa mqtt", "MQTT Unsub");
-        if (1 == 1) return;
-        // TODO: temporary turn of pub sub, delete above
-
-        try {
-            IMqttToken unsubToken = client.unsubscribe(topic);
-            unsubToken.setActionCallback(new IMqttActionListener() {
-                @Override
-                public void onSuccess(IMqttToken asyncActionToken) {
-                    // The subscription could successfully be removed from the client
-                }
-
-                @Override
-                public void onFailure(IMqttToken asyncActionToken,
-                                      Throwable exception) {
-                    // some error occurred, this is very unlikely as even if the client
-                    // did not had a subscription to the topic the unsubscribe action
-                    // will be successfully
                 }
             });
         } catch (MqttException e) {
@@ -424,9 +233,10 @@ public class MainActivity extends AppCompatActivity {
      */
 
     private void subscribeAllTopic(int from, int to) {
+//        sub("401");
         for (int i = from; i <= to; i++) {
+            Log.d("Sa log subscribed:" + String.valueOf(i), String.valueOf(i));
             sub(String.valueOf(i));
-            Log.d("Sa log subscribed: ", String.valueOf(i));
         }
     }
 
@@ -444,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
                 if (currentRequestQueue.contains(room)) {
                     missedRequestQueue.add(room);
                     sendNoti(room, "Bệnh nhân cần cấp cứu");
-                    mHandler.obtainMessage(1).sendToTarget(); // TODO:
+                    mHandler.obtainMessage(1).sendToTarget();
 //                    updateAlarm();
                 }
                 cancel();
@@ -457,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
             case "Cap cuu": {
                 if (!currentRequestQueue.contains(room)) {
                     currentRequestQueue.add(room);
-                    long waitingTimeInSeconds = 3L;
+                    long waitingTimeInSeconds = 20L;
                     timer.schedule(timerTaskBuilder(room), waitingTimeInSeconds * 1000);
                 }
                 break;
@@ -466,8 +276,11 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }
             case "OK": {
-                currentRequestQueue.remove(room); // TODO: does this even work
-                missedRequestQueue.remove(room);
+                currentRequestQueue.remove(room);
+                if (missedRequestQueue.contains(room)) {
+                    missedRequestQueue.remove(room);
+                    clearNoti(room);
+                }
                 break;
             }
             default: {
@@ -495,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
     private synchronized void updateAlarm() {
         stopSound();
         if (missedRequestQueue.isEmpty()) {
-            text.setText("CHill");
+            text.setText(TEST_MODE ? "CHill" : "");
             return;
         }
         String room = missedRequestQueue.peek();

@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private Button resolveButton;
 //    private Button emitButton;
     private TextView text;
+    private CheckBox g1, g2, g3, g4, g5, g6, g7, g8, g9, g10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,26 +48,29 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         this.requestQueue = new RequestQueue();
-        this.text = (TextView) this.findViewById(R.id.text);
-        this.resolveButton = (Button) this.findViewById(R.id.button_accept);
-//        this.emitButton = (Button) this.findViewById(R.id.button_emit);
+        setTitle(getString(R.string.schoolName));
+        text = (TextView) this.findViewById(R.id.text);
+        resolveButton = (Button) this.findViewById(R.id.button_accept);
 
-        CheckBox g1 = (CheckBox) this.findViewById(R.id.checkBox1);
-        CheckBox g2 = (CheckBox) this.findViewById(R.id.checkBox2);
-        CheckBox g3 = (CheckBox) this.findViewById(R.id.checkBox3);
-        CheckBox g4 = (CheckBox) this.findViewById(R.id.checkBox4);
-        CheckBox g5 = (CheckBox) this.findViewById(R.id.checkBox5);
-        CheckBox g6 = (CheckBox) this.findViewById(R.id.checkBox6);
-        CheckBox g7 = (CheckBox) this.findViewById(R.id.checkBox7);
-        CheckBox g8 = (CheckBox) this.findViewById(R.id.checkBox8);
-        CheckBox g9 = (CheckBox) this.findViewById(R.id.checkBox9);
-        CheckBox g10 = (CheckBox) this.findViewById(R.id.checkBox10);
+        g1 = (CheckBox) findViewById(R.id.checkBox1);
+        g2 = (CheckBox) findViewById(R.id.checkBox2);
+        g3 = (CheckBox) findViewById(R.id.checkBox3);
+        g4 = (CheckBox) findViewById(R.id.checkBox4);
+        g5 = (CheckBox) findViewById(R.id.checkBox5);
+        g6 = (CheckBox) findViewById(R.id.checkBox6);
+        g7 = (CheckBox) findViewById(R.id.checkBox7);
+        g8 = (CheckBox) findViewById(R.id.checkBox8);
+        g9 = (CheckBox) findViewById(R.id.checkBox9);
+        g10 = (CheckBox) findViewById(R.id.checkBox10);
 
         initMqtt();
-//        emitButton.setOnClickListener(this::fakeRequestClick);
 
         resolveButton.setOnClickListener(v -> handleBtnResolveClick());
 
+        setupOnClickListenerForCheckboxs();
+    }
+
+    private void setupOnClickListenerForCheckboxs() {
         g1.setOnClickListener(v -> {
             boolean checked = ((CheckBox) v).isChecked();
             // Check which checkbox was clicked
@@ -232,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
             }
             case "OK": {
                 requestQueue.remove(room);
-                clearNoti(room);
+//                clearNoti(room);
                 Toast.makeText(this, room + " đã được tiếp nhận", Toast.LENGTH_LONG).show();
                 break;
             }
@@ -248,7 +252,7 @@ public class MainActivity extends AppCompatActivity {
 
         Pair<String, Boolean> victim = requestQueue.remove();
         String room = victim.first;
-        clearNoti(room);
+//        clearNoti(room);
         pub(room + "_re", "accept");
         pub(room, "OK");
         updateAlarm();

@@ -25,6 +25,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textSize="34sp"
+        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -58,7 +59,6 @@
                 android:layout_marginVertical="10sp"
                 android:padding="5sp"
                 android:text="401"
-                android:textColor="#263238"
                 android:textSize="20sp" />
 
             <CheckBox

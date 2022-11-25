@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/background"
+    android:background="@drawable/background_new"
     tools:context=".MainActivity">
 
     <Button
@@ -24,12 +24,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:textColor="@color/white"
         android:textSize="34sp"
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.481"
         tools:text="@string/textHolder" />
 
     <LinearLayout
@@ -59,6 +61,7 @@
                 android:layout_marginVertical="10sp"
                 android:padding="5sp"
                 android:text="401"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
             <CheckBox
@@ -69,6 +72,7 @@
                 android:layout_marginVertical="10sp"
                 android:padding="5sp"
                 android:text="403"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
             <CheckBox
@@ -79,6 +83,7 @@
                 android:layout_marginVertical="10sp"
                 android:padding="5sp"
                 android:text="405"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
             <CheckBox
@@ -89,6 +94,7 @@
                 android:layout_marginVertical="10sp"
                 android:padding="5sp"
                 android:text="407"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
             <CheckBox
@@ -99,6 +105,7 @@
                 android:layout_marginVertical="10sp"
                 android:padding="5sp"
                 android:text="409"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
         </LinearLayout>
@@ -119,6 +126,7 @@
                 android:layout_marginVertical="10sp"
                 android:padding="5sp"
                 android:text="402"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
             <CheckBox
@@ -129,6 +137,7 @@
                 android:layout_marginVertical="10sp"
                 android:padding="5sp"
                 android:text="404"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
             <CheckBox
@@ -139,6 +148,7 @@
                 android:layout_marginVertical="10sp"
                 android:padding="5sp"
                 android:text="406"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
             <CheckBox
@@ -149,6 +159,7 @@
                 android:layout_marginVertical="10sp"
                 android:padding="5sp"
                 android:text="408"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
             <CheckBox
@@ -159,6 +170,7 @@
                 android:layout_marginVertical="10sp"
                 android:padding="5sp"
                 android:text="410"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
 

@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle(getString(R.string.schoolName));
 
         this.requestQueue = new RequestQueue();
         this.text = (TextView) this.findViewById(R.id.text);

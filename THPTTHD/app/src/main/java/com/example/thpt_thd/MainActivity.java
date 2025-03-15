@@ -35,12 +35,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
+    private String serverURL = "tcp://test.mosquitto.org:1883";
     MqttAndroidClient client;
     RequestQueue requestQueue;
     private Button resolveButton;
-//    private Button emitButton;
     private TextView text;
-    private CheckBox g1, g2, g3, g4, g5, g6, g7, g8, g9, g10;
+    private CheckBox g1, g2, g3, g4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,14 +56,8 @@ public class MainActivity extends AppCompatActivity {
         g2 = (CheckBox) findViewById(R.id.checkBox2);
         g3 = (CheckBox) findViewById(R.id.checkBox3);
         g4 = (CheckBox) findViewById(R.id.checkBox4);
-        g5 = (CheckBox) findViewById(R.id.checkBox5);
-        g6 = (CheckBox) findViewById(R.id.checkBox6);
-        g7 = (CheckBox) findViewById(R.id.checkBox7);
-        g8 = (CheckBox) findViewById(R.id.checkBox8);
-        g9 = (CheckBox) findViewById(R.id.checkBox9);
-        g10 = (CheckBox) findViewById(R.id.checkBox10);
 
-        initMqtt();
+        initMqtt(serverURL);
 
         resolveButton.setOnClickListener(v -> handleBtnResolveClick());
 
@@ -110,110 +104,44 @@ public class MainActivity extends AppCompatActivity {
                 unsub("404");
             }
         });
-
-        g5.setOnClickListener(v -> {
-            boolean checked = ((CheckBox) v).isChecked();
-            // Check which checkbox was clicked
-            if (checked) {
-                sub("405");
-            } else {
-                unsub("405");
-            }
-        });
-
-        g6.setOnClickListener(v -> {
-            boolean checked = ((CheckBox) v).isChecked();
-            // Check which checkbox was clicked
-            if (checked) {
-                sub("406");
-            } else {
-                unsub("406");
-            }
-        });
-
-        g7.setOnClickListener(v -> {
-            boolean checked = ((CheckBox) v).isChecked();
-            // Check which checkbox was clicked
-            if (checked) {
-                sub("407");
-            } else {
-                unsub("407");
-            }
-        });
-
-        g8.setOnClickListener(v -> {
-            boolean checked = ((CheckBox) v).isChecked();
-            // Check which checkbox was clicked
-            if (checked) {
-                sub("408");
-            } else {
-                unsub("408");
-            }
-        });
-
-        g9.setOnClickListener(v -> {
-            boolean checked = ((CheckBox) v).isChecked();
-            // Check which checkbox was clicked
-            if (checked) {
-                sub("409");
-            } else {
-                unsub("409");
-            }
-        });
-
-        g10.setOnClickListener(v -> {
-            boolean checked = ((CheckBox) v).isChecked();
-            // Check which checkbox was clicked
-            if (checked) {
-                sub("410");
-            } else {
-                unsub("410");
-            }
-        });
-
     }
 
-    private void initMqtt() {
-//        Log.d("Sa mqtt", "MQTT Init");
-//        if (1 == 1) return;
-//        // TODO: temporary turn of mqtt, delete above
-
-        MqttConnectOptions options = new MqttConnectOptions();
-        options.setAutomaticReconnect(true);
+    private void initMqtt(String serverURL) {
         String clientId = MqttClient.generateClientId();
-        client = new MqttAndroidClient(this.getApplicationContext(), "tcp://192.168.0.100:1883", clientId);
+        client = new MqttAndroidClient(this.getApplicationContext(), serverURL, clientId);
         client.setCallback(new MqttCallback() {
             @Override
             public void connectionLost(Throwable cause) {
-
+                Log.d("mqtt", "connectionLost");
+                Toast.makeText(getApplication(), "mqtt disconnected", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void messageArrived(String topic, MqttMessage mqttMessage) {
-                String message = mqttMessage.toString();
-                Log.d("mqtt", message);
-                handleMessageArrived(topic, message);
+                Log.d("mqtt", "messageArrived:" + mqttMessage.toString());
+                handleMessageArrived(topic, mqttMessage.toString());
             }
 
             @Override
             public void deliveryComplete(IMqttDeliveryToken token) {
-
+                Log.d("mqtt", "deliveryComplete");
             }
         });
+
         try {
+            MqttConnectOptions options = new MqttConnectOptions();
+            options.setAutomaticReconnect(true);
             IMqttToken token = client.connect(options);
             token.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    // We are connected
-                    Log.d("mqtt", "onSuccess");
+                    Log.d("mqtt", "client connected");
+                    Toast.makeText(getApplication(), "mqtt server connected: " + serverURL, Toast.LENGTH_LONG).show();
                 }
-
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    // Something went wrong e.g. connection timeout or firewall problems
-                    Log.d("mqtt", "onFailure");
-
+                    Log.d("mqtt", "client failed to connect");
+                    Toast.makeText(getApplication(), "mqtt client failed to connect", Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (MqttException e) {
@@ -222,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void handleMessageArrived(String room, String message) {
-        // Manage notification
+        // TODO: handle incoming messages
         switch (message) {
             case "Cap cuu": {
                 requestQueue.add(room, true);
@@ -236,12 +164,12 @@ public class MainActivity extends AppCompatActivity {
             }
             case "OK": {
                 requestQueue.remove(room);
-//                clearNoti(room);
+                // clearNoti(room);
                 Toast.makeText(this, room + " đã được tiếp nhận", Toast.LENGTH_LONG).show();
                 break;
             }
             default: {
-                Log.d("Sa warning", "Not implemented request type");
+                Log.d("mqtt", "warning received invalid message: " + message);
             }
         }
         updateAlarm();
@@ -263,25 +191,23 @@ public class MainActivity extends AppCompatActivity {
      * Manage displayed text and alarm sound
      */
     private void updateAlarm() {
-        stopSound();
         if (requestQueue.isEmpty()) {
             text.setText(R.string.textHolder);
-            return;
+            stopSound();
+        } else {
+            Pair<String, Boolean> req = requestQueue.peek();
+            String room = req.first;
+            Boolean isUrgent = req.second;
+            if (isUrgent) {
+                text.setText(room + ": Cấp cứu");
+            } else {
+                text.setText(room + ": Hỗ trợ");
+            }
+            playSound(isUrgent);
         }
-        Pair<String, Boolean> req = requestQueue.peek();
-        String room = req.first;
-        Boolean isUrgent = req.second;
-
-        String message = isUrgent ? "Cấp cứu" : "Hỗ trợ";
-        text.setText(room + ": " + message);
-        playSound(isUrgent);
     }
 
     void pub(String topic, String content) {
-//        Log.d("Sa mqtt", "MQTT Called");
-//        if (1 == 1) return;
-//        // TODO: temporary turn of pub sub, delete above
-
         byte[] encodedPayload;
         try {
             encodedPayload = content.getBytes(StandardCharsets.UTF_8);
@@ -291,15 +217,11 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         Log.d("mqtt", "pub");
+        Toast.makeText(this, "message sent", Toast.LENGTH_SHORT).show();
     }
 
     void sub(String topic) {
-//        fakeOkMessageSent(topic);
-//        Log.d("Sa mqtt", "MQTT Called");
-//        if (1 == 1) return;
-//        // TODO: temporary turn of pub sub, delete above
-
-        int qos = 1;
+        int qos = 0;
         try {
             IMqttToken subToken = client.subscribe(topic, qos);
             subToken.setActionCallback(new IMqttActionListener() {
@@ -307,12 +229,14 @@ public class MainActivity extends AppCompatActivity {
                 public void onSuccess(IMqttToken asyncActionToken) {
                     // The message was published
                     Log.d("mqtt", "sub success");
+                    Toast.makeText(getApplication(), "subscribed. topic " + topic, Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken,
                                       Throwable exception) {
                     Log.d("mqtt", "sub fail");
+                    Toast.makeText(getApplication(), "failed to subscribe topic", Toast.LENGTH_SHORT).show();
                     // The subscription could not be performed, maybe the user was not
                     // authorized to subscribe on the specified topic e.g. using wildcards
 
@@ -324,21 +248,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void unsub(String topic) {
-//        Log.d("Sa mqtt", "MQTT Unsub");
-//        if (1 == 1) return;
-//        // TODO: temporary turn of pub sub, delete above
-
         try {
             IMqttToken unsubToken = client.unsubscribe(topic);
             unsubToken.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     // The subscription could successfully be removed from the client
+                    Toast.makeText(getApplication(), "unsubscribed. topic " + topic, Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken,
                                       Throwable exception) {
+                    Toast.makeText(getApplication(), "failed to unsubscribe topic", Toast.LENGTH_SHORT).show();
                     // some error occurred, this is very unlikely as even if the client
                     // did not had a subscription to the topic the unsubscribe action
                     // will be successfully
@@ -387,7 +309,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // TODO: UPDATE suitable sound
     void playSound(boolean isUrgent) {
         stopSound();
         Context context = getApplicationContext();
@@ -401,28 +322,4 @@ public class MainActivity extends AppCompatActivity {
         Intent stopIntent = new Intent(context, RingtoneService.class);
         context.stopService(stopIntent);
     }
-
-    //            For testing
-    public void fakeRequestClick(View v)  {
-        int num = new Random().nextInt(10);
-        String topic = String.valueOf(400 + num);
-        String message = (num < 4) ? "Cap cuu" : "Ho tro";
-        Log.d("mqtt", message);
-        handleMessageArrived(topic, message);
-    }
-
-    public void fakeOkMessageSent(String topic) {
-        handleMessageArrived(topic, "OK");
-    }
-
-    // public void spamAccept(String room) {
-    //     for (int i = 0; i < 70; i++) {
-    //         String channel = room + "_re";
-    //         pub(channel, "accept");
-    //         try {
-    //             Thread.sleep(10);
-    //         } catch (Exception e) {
-    //         }
-    //     }
-    // }
 }

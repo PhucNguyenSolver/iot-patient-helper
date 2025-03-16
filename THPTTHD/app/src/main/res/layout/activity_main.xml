@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     android:orientation="vertical"
     tools:context=".MainActivity">
-<!--    android:background="@drawable/background_plus"-->
+    <!--    android:background="@drawable/background_plus"-->
 
     <ImageView
         android:id="@+id/imageView"
@@ -17,6 +18,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!--        app:layout_constraintTop_toBottomOf="@+id/button_emit" />-->
+
     <Button
         android:id="@+id/button_accept"
         android:layout_width="151dp"
@@ -26,8 +29,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        app:layout_constraintVertical_bias="0.35000002" />
-<!--        app:layout_constraintTop_toBottomOf="@+id/button_emit" />-->
+        app:layout_constraintVertical_bias="0.176" />
 
     <TextView
         android:id="@+id/text"
@@ -83,39 +85,6 @@
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
-            <CheckBox
-                android:id="@+id/checkBox5"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="30sp"
-                android:layout_marginVertical="10sp"
-                android:padding="5sp"
-                android:text="405"
-                android:textColor="@color/black"
-                android:textSize="20sp" />
-
-            <CheckBox
-                android:id="@+id/checkBox7"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="30sp"
-                android:layout_marginVertical="10sp"
-                android:padding="5sp"
-                android:text="407"
-                android:textColor="@color/black"
-                android:textSize="20sp" />
-
-            <CheckBox
-                android:id="@+id/checkBox9"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="30sp"
-                android:layout_marginVertical="10sp"
-                android:padding="5sp"
-                android:text="409"
-                android:textColor="@color/black"
-                android:textSize="20sp" />
-
         </LinearLayout>
 
         <LinearLayout
@@ -137,62 +106,18 @@
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
-            <CheckBox
-                android:id="@+id/checkBox4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="30sp"
-                android:layout_marginVertical="10sp"
-                android:padding="5sp"
-                android:text="404"
-                android:textColor="@color/black"
-                android:textSize="20sp" />
-
-            <CheckBox
-                android:id="@+id/checkBox6"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="30sp"
-                android:layout_marginVertical="10sp"
-                android:padding="5sp"
-                android:text="406"
-                android:textColor="@color/black"
-                android:textSize="20sp" />
-
-            <CheckBox
-                android:id="@+id/checkBox8"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="30sp"
-                android:layout_marginVertical="10sp"
-                android:padding="5sp"
-                android:text="408"
-                android:textColor="@color/black"
-                android:textSize="20sp" />
-
-            <CheckBox
-                android:id="@+id/checkBox10"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="30sp"
-                android:layout_marginVertical="10sp"
-                android:padding="5sp"
-                android:text="410"
-                android:textColor="@color/black"
-                android:textSize="20sp" />
-
 
         </LinearLayout>
 
     </LinearLayout>
 
     <!--    <Button-->
-<!--        android:id="@+id/button_emit"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="@string/emit"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/text" />-->
+    <!--        android:id="@+id/button_emit"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:text="@string/emit"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/text" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

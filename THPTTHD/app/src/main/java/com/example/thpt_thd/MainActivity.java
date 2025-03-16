@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
         g1 = (CheckBox) findViewById(R.id.checkBox1);
         g2 = (CheckBox) findViewById(R.id.checkBox2);
         g3 = (CheckBox) findViewById(R.id.checkBox3);
-        g4 = (CheckBox) findViewById(R.id.checkBox4);
 
         initMqtt(serverURL);
 
@@ -107,16 +106,6 @@ public class MainActivity extends AppCompatActivity {
                 sub("403");
             } else {
                 unsub("403");
-            }
-        });
-
-        g4.setOnClickListener(v -> {
-            boolean checked = ((CheckBox) v).isChecked();
-            // Check which checkbox was clicked
-            if (checked) {
-                sub("404");
-            } else {
-                unsub("404");
             }
         });
     }

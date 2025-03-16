@@ -7,6 +7,7 @@ import androidx.core.app.NotificationCompat;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -62,6 +63,20 @@ public class MainActivity extends AppCompatActivity {
         resolveButton.setOnClickListener(v -> handleBtnResolveClick());
 
         setupOnClickListenerForCheckboxs();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent); // 🔹 Update the intent for this activity
+
+        // 🔹 Handle the updated "room" value
+        String room = intent.getStringExtra("room");
+        if (room != null) {
+            Log.d("MainActivity", "Relaunched with room: " + room);
+            // TODO: Update UI or take action based on new room value
+            Toast.makeText(this, "Relaunched with room: " + room, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void setupOnClickListenerForCheckboxs() {
@@ -272,6 +287,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void sendNoti(@NonNull String topic, @NonNull String msg) {
+        // 🔹 Intent to bring MainActivity to the foreground
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("room", topic); // Pass the room as an extra
+        intent.putExtra("isUrgent", true); // Pass the room as an extra
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        // 🔹 Wrap the intent in a PendingIntent
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE // Ensure it updates with new extras
+        );
+
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher_foreground);
         @SuppressLint("WrongConstant") Notification noti = new NotificationCompat.Builder(this, MyApplication.CHANNEL_ID)
             .setContentTitle(topic)
@@ -280,6 +309,7 @@ public class MainActivity extends AppCompatActivity {
             .setLargeIcon(bitmap)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
+            .setContentIntent(pendingIntent)
             .setSilent(true)
             .build();
 

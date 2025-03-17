@@ -17,6 +17,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -43,10 +47,13 @@ public class MainActivity extends AppCompatActivity {
     private TextView text;
     private CheckBox g1, g2, g3, g4;
 
+    private WebView webView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        this.webView = findViewById(R.id.webView);
 
         this.requestQueue = new RequestQueue();
         setTitle(getString(R.string.schoolName));
@@ -64,6 +71,14 @@ public class MainActivity extends AppCompatActivity {
         setupOnClickListenerForCheckboxs();
     }
 
+    protected void registerCameraViewer(String webURL) {
+        WebSettings webSettings = webView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setDomStorageEnabled(true);
+        webView.setWebChromeClient(new WebChromeClient());
+        webView.loadUrl(webURL);
+    }
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -73,8 +88,8 @@ public class MainActivity extends AppCompatActivity {
         String room = intent.getStringExtra("room");
         if (room != null) {
             Log.d("MainActivity", "Relaunched with room: " + room);
-            // TODO: Update UI or take action based on new room value
-            Toast.makeText(this, "Relaunched with room: " + room, Toast.LENGTH_SHORT).show();
+            registerCameraViewer("https://rtsp.gasbinhminh.vn");
+            Toast.makeText(this, "camera " + room, Toast.LENGTH_SHORT).show();
         }
     }
 

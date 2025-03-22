@@ -2,8 +2,8 @@
     <string name="app_name">Classroom Monitor</string>
     <string name="channel_name">channel 1</string>
     <string name="channel_description">This is channel 1</string>
-    <string name="accept">Tiếp nhận</string>
+    <string name="accept">Tôi tiếp nhận cuộc gọi này</string>
     <string name="emit">Emit</string>
-    <string name="textHolder">Thiết bị:</string>
-    <string name="schoolName">PROJECT SANGTAO</string>
+    <string name="textHolder">Nhận cuộc gọi cảnh báo từ các phòng học:</string>
+    <string name="schoolName">CLASSROOM MONITOR</string>
 </resources>

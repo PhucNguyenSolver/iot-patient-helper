@@ -20,7 +20,6 @@ import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -37,7 +36,6 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     private String serverURL = "tcp://test.mosquitto.org:1883";
@@ -45,9 +43,10 @@ public class MainActivity extends AppCompatActivity {
     RequestQueue requestQueue;
     private Button resolveButton;
     private TextView text;
-    private CheckBox g1, g2, g3, g4;
+    private CheckBox g1, g2, g3;
 
     private WebView webView;
+    private String webURL = "https://rtsp.gasbinhminh.vn/stream";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,14 +68,16 @@ public class MainActivity extends AppCompatActivity {
         resolveButton.setOnClickListener(v -> handleBtnResolveClick());
 
         setupOnClickListenerForCheckboxs();
+
+        showCameraViewer();
     }
 
-    protected void registerCameraViewer(String webURL) {
+    protected void showCameraViewer() {
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDomStorageEnabled(true);
         webView.setWebChromeClient(new WebChromeClient());
-        webView.loadUrl(webURL);
+        webView.loadUrl(this.webURL);
     }
 
     @Override
@@ -87,9 +88,9 @@ public class MainActivity extends AppCompatActivity {
         // 🔹 Handle the updated "room" value
         String room = intent.getStringExtra("room");
         if (room != null) {
-            Log.d("MainActivity", "Relaunched with room: " + room);
-            registerCameraViewer("https://rtsp.gasbinhminh.vn");
-            Toast.makeText(this, "camera " + room, Toast.LENGTH_SHORT).show();
+            showCameraViewer();
+            Toast.makeText(this, "camera " + room, Toast.LENGTH_LONG).show();
+            resolveButton.setVisibility(View.VISIBLE);
         }
     }
 

@@ -5,5 +5,6 @@
     <string name="accept">Tôi tiếp nhận cuộc gọi này</string>
     <string name="emit">Emit</string>
     <string name="textHolder">Nhận cuộc gọi cảnh báo từ các phòng học:</string>
-    <string name="schoolName">CLASSROOM MONITOR</string>
+    <string name="schoolName">🏫 Hệ Thống Cảnh Báo Trường Học</string>
+    <string name="prompt_subscribe">Thêm vào Danh sách theo dõi</string>
 </resources>

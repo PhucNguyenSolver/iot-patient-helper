@@ -42,42 +42,48 @@ public class MainActivity extends AppCompatActivity {
     MqttAndroidClient client;
     RequestQueue requestQueue;
     private Button resolveButton;
-    private TextView text;
+    private TextView alertText;
     private CheckBox g1, g2, g3;
 
     private WebView webView;
-    private String webURL = "https://rtsp.gasbinhminh.vn/stream";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        this.webView = findViewById(R.id.webView);
+        setTitle(getString(R.string.schoolName));
 
         this.requestQueue = new RequestQueue();
-        setTitle(getString(R.string.schoolName));
-        text = (TextView) this.findViewById(R.id.text);
-        resolveButton = (Button) this.findViewById(R.id.button_accept);
+        this.webView = findViewById(R.id.webView);
+        this.alertText = this.findViewById(R.id.text);
+        this.resolveButton = this.findViewById(R.id.button_accept);
 
-        g1 = (CheckBox) findViewById(R.id.checkBox1);
-        g2 = (CheckBox) findViewById(R.id.checkBox2);
-        g3 = (CheckBox) findViewById(R.id.checkBox3);
+        g1 = (CheckBox) findViewById(R.id.cardView1).findViewById(R.id.subscribeCheckBox);
+        ((TextView)findViewById(R.id.cardView1).findViewById(R.id.roomText)).setText("Phòng học 4A1");
+        findViewById(R.id.cardView1).findViewById(R.id.roomImage).setOnClickListener(v -> showCameraViewer());
+
+        g2 = (CheckBox) findViewById(R.id.cardView2).findViewById(R.id.subscribeCheckBox);
+        ((TextView)findViewById(R.id.cardView2).findViewById(R.id.roomText)).setText("Phòng học 4A2");
+        findViewById(R.id.cardView1).findViewById(R.id.roomImage).setOnClickListener(v -> showCameraViewer());
+
+        g3 = (CheckBox) findViewById(R.id.cardView3).findViewById(R.id.subscribeCheckBox);
+        ((TextView)findViewById(R.id.cardView3).findViewById(R.id.roomText)).setText("Phòng học 4A3");
+        findViewById(R.id.cardView1).findViewById(R.id.roomImage).setOnClickListener(v -> showCameraViewer());
+
 
         initMqtt(serverURL);
-
-        resolveButton.setOnClickListener(v -> handleBtnResolveClick());
-
         setupOnClickListenerForCheckboxs();
-
-        showCameraViewer();
+        resolveButton.setOnClickListener(v -> handleBtnResolveClick());
     }
 
     protected void showCameraViewer() {
+        String webURL = "https://rtsp.gasbinhminh.vn/stream";
+        Toast.makeText(getApplicationContext(), "loading..", Toast.LENGTH_SHORT).show();
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDomStorageEnabled(true);
         webView.setWebChromeClient(new WebChromeClient());
-        webView.loadUrl(this.webURL);
+        webView.loadUrl(webURL);
     }
 
     @Override
@@ -212,16 +218,15 @@ public class MainActivity extends AppCompatActivity {
      */
     private void updateAlarm() {
         if (requestQueue.isEmpty()) {
-            text.setText(R.string.textHolder);
             stopSound();
         } else {
             Pair<String, Boolean> req = requestQueue.peek();
             String room = req.first;
             Boolean isUrgent = req.second;
             if (isUrgent) {
-                text.setText(room + ": Cấp cứu");
+                alertText.setText(room + ": Tín hiệu khẩn cấp 🆘");
             } else {
-                text.setText(room + ": Hỗ trợ");
+                alertText.setText(room + ": Cần hỗ trợ ✋");
             }
             playSound(isUrgent);
         }

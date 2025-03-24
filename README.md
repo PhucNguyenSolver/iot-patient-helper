@@ -1,10 +1,15 @@
 # Patient Helper IoT
+
 ## About
+
 - A mini IoT system for hospitals
 - To monitor and alert health care assistants when patients need help
 
 ## Installation
-[APK file](https://drive.google.com/drive/folders/1bWBaucudhVCYZ8WQyr1AMSGvpDVx4QzG?usp=sharing)
+
+- [APK file](./builds/app-debug.apk)
+- Last updated: 24/03/2025
 
 ## Development
+
 - Android Studio
